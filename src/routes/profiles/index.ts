@@ -59,15 +59,26 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 		}
 	);
 
-	// fastify.delete(
-	// 	'/:id',
-	// 	{
-	// 		schema: {
-	// 			params: idParamSchema,
-	// 		},
-	// 	},
-	// 	async function (request, reply): Promise<ProfileEntity> {}
-	// );
+	fastify.delete(
+		'/:id',
+		{
+			schema: {
+				params: idParamSchema,
+			},
+		},
+		async function (request, reply): Promise<ProfileEntity> {
+			const { id } = request.params;
+			const profile = await this.db.profiles.findOne({ key: 'id', equals: id });
+
+			if (!profile) {
+				return reply.status(400).send({ message: Constants.BAD_REQUEST });
+			}
+
+			const deleteProfile = await this.db.profiles.delete(id);
+
+			return reply.send(deleteProfile);
+		}
+	);
 
 	fastify.patch(
 		'/:id',
