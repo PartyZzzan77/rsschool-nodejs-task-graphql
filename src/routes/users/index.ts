@@ -4,7 +4,7 @@ import { idParamSchema } from '../../utils/reusedSchemas';
 import {
 	createUserBodySchema,
 	changeUserBodySchema,
-	//subscribeBodySchema,
+	subscribeBodySchema,
 } from './schemas';
 import type { UserEntity } from '../../utils/DB/entities/DBUsers';
 
@@ -59,16 +59,44 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 	// 	async function (request, reply): Promise<UserEntity> {}
 	// );
 
-	// fastify.post(
-	// 	'/:id/subscribeTo',
-	// 	{
-	// 		schema: {
-	// 			body: subscribeBodySchema,
-	// 			params: idParamSchema,
-	// 		},
-	// 	},
-	// 	async function (request, reply): Promise<UserEntity> {}
-	// );
+	fastify.post(
+		'/:id/subscribeTo',
+		{
+			schema: {
+				body: subscribeBodySchema,
+				params: idParamSchema,
+			},
+		},
+		async function (request, reply): Promise<UserEntity> {
+			const { id } = request.params;
+			const { userId } = request.body;
+			const subscriber = await this.db.users.findOne({ key: 'id', equals: id });
+			const candidate = await this.db.users.findOne({ key: 'id', equals: userId });
+
+			if (!subscriber || !candidate) {
+				return reply.status(404).send({ message: Constants.NOT_FOUND });
+			}
+			const isFollower = subscriber.subscribedToUserIds.includes(userId);
+
+			if (isFollower) {
+				return reply.status(400).send({ message: Constants.BAD_REQUEST });
+			}
+
+			const subscriberSubscribedToIds = [candidate.id, ...subscriber.subscribedToUserIds];
+
+			const candidateSubscribedToUserIds = [subscriber.id, ...candidate.subscribedToUserIds];
+
+			const updatedUser = await this.db.users.change(id, {
+				subscribedToUserIds: subscriberSubscribedToIds,
+			});
+
+			await this.db.users.change(userId, {
+				subscribedToUserIds: candidateSubscribedToUserIds,
+			});
+
+			return reply.status(200).send(updatedUser);
+		}
+	);
 
 	// fastify.post(
 	// 	'/:id/unsubscribeFrom',
