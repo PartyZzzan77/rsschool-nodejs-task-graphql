@@ -1,10 +1,7 @@
 import { Constants } from './../../utils/constants';
 import { FastifyPluginAsyncJsonSchemaToTs } from '@fastify/type-provider-json-schema-to-ts';
 import { idParamSchema } from '../../utils/reusedSchemas';
-import {
-	createProfileBodySchema,
-	//changeProfileBodySchema
-} from './schema';
+import { createProfileBodySchema, changeProfileBodySchema } from './schema';
 import type { ProfileEntity } from '../../utils/DB/entities/DBProfiles';
 
 const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
@@ -72,16 +69,28 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 	// 	async function (request, reply): Promise<ProfileEntity> {}
 	// );
 
-	// fastify.patch(
-	// 	'/:id',
-	// 	{
-	// 		schema: {
-	// 			body: changeProfileBodySchema,
-	// 			params: idParamSchema,
-	// 		},
-	// 	},
-	// 	async function (request, reply): Promise<ProfileEntity> {}
-	// );
+	fastify.patch(
+		'/:id',
+		{
+			schema: {
+				body: changeProfileBodySchema,
+				params: idParamSchema,
+			},
+		},
+		async function (request, reply): Promise<ProfileEntity> {
+			const { id } = request.params;
+			const { body } = request;
+			const profile = await this.db.profiles.findOne({ key: 'id', equals: id });
+
+			if (!profile) {
+				return reply.status(400).send({ message: Constants.BAD_REQUEST });
+			}
+
+			const updatedProfile = await this.db.profiles.change(id, body);
+
+			return reply.send(updatedProfile);
+		}
+	);
 };
 
 export default plugin;
