@@ -2,9 +2,9 @@ import { Constants } from './../../utils/constants';
 import { FastifyPluginAsyncJsonSchemaToTs } from '@fastify/type-provider-json-schema-to-ts';
 import { idParamSchema } from '../../utils/reusedSchemas';
 import {
-	//createProfileBodySchema,
+	createProfileBodySchema,
 	//changeProfileBodySchema
- } from './schema';
+} from './schema';
 import type { ProfileEntity } from '../../utils/DB/entities/DBProfiles';
 
 const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
@@ -35,15 +35,32 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 		}
 	);
 
-	// fastify.post(
-	// 	'/',
-	// 	{
-	// 		schema: {
-	// 			body: createProfileBodySchema,
-	// 		},
-	// 	},
-	// 	async function (request, reply): Promise<ProfileEntity> {}
-	// );
+	fastify.post(
+		'/',
+		{
+			schema: {
+				body: createProfileBodySchema,
+			},
+		},
+		async function (request, reply): Promise<ProfileEntity> {
+			const { userId } = request.body;
+			const user = await this.db.users.findOne({ key: 'id', equals: userId });
+			const checkProfile = await this.db.profiles.findOne({ key: 'userId', equals: userId });
+			const memberTypes = ['basic', 'business'];
+
+			if (!user) {
+				return reply.status(404).send({ message: Constants.USER_ERROR });
+			}
+
+			const newProfile = (await this.db.profiles.create(request.body)) || {};
+
+			if (checkProfile || !newProfile.id || !memberTypes.includes(newProfile.memberTypeId)) {
+				return reply.status(400).send({ message: Constants.BAD_REQUEST });
+			}
+
+			return reply.send(newProfile);
+		}
+	);
 
 	// fastify.delete(
 	// 	'/:id',
