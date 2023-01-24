@@ -3,7 +3,7 @@ import { FastifyPluginAsyncJsonSchemaToTs } from '@fastify/type-provider-json-sc
 import { idParamSchema } from '../../utils/reusedSchemas';
 import {
 	createUserBodySchema,
-	//changeUserBodySchema,
+	changeUserBodySchema,
 	//subscribeBodySchema,
 } from './schemas';
 import type { UserEntity } from '../../utils/DB/entities/DBUsers';
@@ -81,16 +81,28 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 	// 	async function (request, reply): Promise<UserEntity> {}
 	// );
 
-	// fastify.patch(
-	// 	'/:id',
-	// 	{
-	// 		schema: {
-	// 			body: changeUserBodySchema,
-	// 			params: idParamSchema,
-	// 		},
-	// 	},
-	// 	async function (request, reply): Promise<UserEntity> {}
-	// );
+	fastify.patch(
+		'/:id',
+		{
+			schema: {
+				body: changeUserBodySchema,
+				params: idParamSchema,
+			},
+		},
+		async function (request, reply): Promise<UserEntity> {
+			const { id } = request.params;
+			const { body } = request;
+			const candidate = await this.db.users.findOne({ key: 'id', equals: id });
+
+			if (!candidate) {
+				reply.status(400).send({ message: Constants.BAD_REQUEST });
+			}
+
+			const updatedUser = await this.db.users.change(id, body);
+
+			return reply.send(updatedUser);
+		}
+	);
 };
 
 export default plugin;
