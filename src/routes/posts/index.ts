@@ -1,10 +1,7 @@
 import { Constants } from './../../utils/constants';
 import { FastifyPluginAsyncJsonSchemaToTs } from '@fastify/type-provider-json-schema-to-ts';
 import { idParamSchema } from '../../utils/reusedSchemas';
-import {
-	createPostBodySchema,
-	//changePostBodySchema
-} from './schema';
+import { createPostBodySchema, changePostBodySchema } from './schema';
 import type { PostEntity } from '../../utils/DB/entities/DBPosts';
 
 const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
@@ -65,16 +62,28 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 	// 	async function (request, reply): Promise<PostEntity> {}
 	// );
 
-	// fastify.patch(
-	// 	'/:id',
-	// 	{
-	// 		schema: {
-	// 			body: changePostBodySchema,
-	// 			params: idParamSchema,
-	// 		},
-	// 	},
-	// 	async function (request, reply): Promise<PostEntity> {}
-	// );
+	fastify.patch(
+		'/:id',
+		{
+			schema: {
+				body: changePostBodySchema,
+				params: idParamSchema,
+			},
+		},
+		async function (request, reply): Promise<PostEntity> {
+			const { id } = request.params;
+			const { body } = request;
+			const post = await this.db.posts.findOne({ key: 'id', equals: id });
+
+			if (!post) {
+				return reply.status(400).send({ message: Constants.BAD_REQUEST });
+			}
+
+			const updatedPost = await this.db.posts.change(id, body);
+
+			return reply.send(updatedPost);
+		}
+	);
 };
 
 export default plugin;
