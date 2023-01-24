@@ -23,7 +23,10 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 		async function (request, reply): Promise<MemberTypeEntity> {
 			const { id } = request.params;
 
-			const memberType = await this.db.memberTypes.findOne({ key: 'id', equals: id });
+			const memberType = await this.db.memberTypes.findOne({
+				key: 'id',
+				equals: id,
+			});
 
 			if (!memberType) {
 				return reply.status(404).send({ message: Constants.MEMBER_TYPE_ERROR });
@@ -45,7 +48,10 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 			const { id } = request.params;
 			const { body } = request;
 
-			const memberType = await this.db.memberTypes.findOne({ key: 'id', equals: id });
+			const memberType = await this.db.memberTypes.findOne({
+				key: 'id',
+				equals: id,
+			});
 
 			if (!memberType) {
 				return reply.status(400).send({ message: Constants.BAD_REQUEST });

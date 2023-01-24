@@ -2,18 +2,15 @@ import { Constants } from './../../utils/constants';
 import { FastifyPluginAsyncJsonSchemaToTs } from '@fastify/type-provider-json-schema-to-ts';
 import { idParamSchema } from '../../utils/reusedSchemas';
 import {
-	createUserBodySchema,
-	changeUserBodySchema,
-	subscribeBodySchema,
+	createUserBodySchema, changeUserBodySchema, subscribeBodySchema,
 } from './schemas';
 import type { UserEntity } from '../../utils/DB/entities/DBUsers';
-
 
 const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 	fastify
 ): Promise<void> => {
 	fastify.get('/', async function (request, reply): Promise<UserEntity[]> {
-		return reply.send(this.db.users)
+		return reply.send(this.db.users);
 	});
 
 	fastify.get(
@@ -69,7 +66,10 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 				key: 'subscribedToUserIds',
 				equals: [deletedUser.id],
 			});
-			const posts = await this.db.posts.findMany({ key: 'userId', equals: deletedUser.id });
+			const posts = await this.db.posts.findMany({
+				key: 'userId',
+				equals: deletedUser.id,
+			});
 			const profile = await this.db.profiles.findOne({
 				key: 'userId',
 				equals: deletedUser.id,
@@ -105,7 +105,10 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 			const { id } = request.params;
 			const { userId } = request.body;
 			const subscriber = await this.db.users.findOne({ key: 'id', equals: id });
-			const candidate = await this.db.users.findOne({ key: 'id', equals: userId });
+			const candidate = await this.db.users.findOne({
+				key: 'id',
+				equals: userId,
+			});
 
 			if (!subscriber || !candidate) {
 				return reply.status(404).send({ message: Constants.NOT_FOUND });
@@ -116,9 +119,15 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 				return reply.status(400).send({ message: Constants.BAD_REQUEST });
 			}
 
-			const subscriberSubscribedToIds = [candidate.id, ...subscriber.subscribedToUserIds];
+			const subscriberSubscribedToIds = [
+				candidate.id,
+				...subscriber.subscribedToUserIds,
+			];
 
-			const candidateSubscribedToUserIds = [subscriber.id, ...candidate.subscribedToUserIds];
+			const candidateSubscribedToUserIds = [
+				subscriber.id,
+				...candidate.subscribedToUserIds,
+			];
 
 			const updatedUser = await this.db.users.change(id, {
 				subscribedToUserIds: subscriberSubscribedToIds,
@@ -143,8 +152,14 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 		async function (request, reply): Promise<UserEntity> {
 			const { id } = request.params;
 			const { userId } = request.body;
-			const unSubscriber = await this.db.users.findOne({ key: 'id', equals: id });
-			const candidate = await this.db.users.findOne({ key: 'id', equals: userId });
+			const unSubscriber = await this.db.users.findOne({
+				key: 'id',
+				equals: id,
+			});
+			const candidate = await this.db.users.findOne({
+				key: 'id',
+				equals: userId,
+			});
 
 			if (!unSubscriber || !candidate) {
 				return reply.status(404).send({ message: Constants.NOT_FOUND });
@@ -157,16 +172,16 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 				return reply.status(400).send({ message: Constants.BAD_REQUEST });
 			}
 
-			const unSubscriberSubscribedToIds = [...unSubscriber.subscribedToUserIds].filter(
-				(sub) => sub !== userId
-			);
+			const unSubscriberSubscribedToIds = [
+				...unSubscriber.subscribedToUserIds,
+			].filter((sub) => sub !== userId);
 			const updatedUser = await this.db.users.change(id, {
 				subscribedToUserIds: unSubscriberSubscribedToIds,
 			});
 
-			const candidateSubscribedToUserIds = [...candidate.subscribedToUserIds].filter(
-				(sub) => sub !== id
-			);
+			const candidateSubscribedToUserIds = [
+				...candidate.subscribedToUserIds,
+			].filter((sub) => sub !== id);
 
 			await this.db.users.change(userId, {
 				subscribedToUserIds: candidateSubscribedToUserIds,
