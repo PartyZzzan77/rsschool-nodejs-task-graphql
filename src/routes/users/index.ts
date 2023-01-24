@@ -49,15 +49,49 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 		}
 	);
 
-	// fastify.delete(
-	// 	'/:id',
-	// 	{
-	// 		schema: {
-	// 			params: idParamSchema,
-	// 		},
-	// 	},
-	// 	async function (request, reply): Promise<UserEntity> {}
-	// );
+	fastify.delete(
+		'/:id',
+		{
+			schema: {
+				params: idParamSchema,
+			},
+		},
+		async function (request, reply): Promise<UserEntity> {
+			const { id } = request.params;
+			const user = await this.db.users.findOne({ key: 'id', equals: id });
+
+			if (!user) {
+				reply.status(400).send({ message: Constants.USER_ERROR });
+			}
+
+			const deletedUser = await this.db.users.delete(id);
+			const followers = await this.db.users.findMany({
+				key: 'subscribedToUserIds',
+				equals: [deletedUser.id],
+			});
+			const posts = await this.db.posts.findMany({ key: 'userId', equals: deletedUser.id });
+			const profile = await this.db.profiles.findOne({
+				key: 'userId',
+				equals: deletedUser.id,
+			});
+			if (profile) {
+				await this.db.profiles.delete(profile.id);
+			}
+
+			followers.forEach(
+				async (follower) =>
+					await this.db.users.change(follower.id, {
+						subscribedToUserIds: [...follower.subscribedToUserIds].filter(
+							(fId) => fId !== deletedUser.id
+						),
+					})
+			);
+
+			posts.forEach(async (post) => await this.db.posts.delete(post.id));
+
+			return reply.send(deletedUser);
+		}
+	);
 
 	fastify.post(
 		'/:id/subscribeTo',
