@@ -5,7 +5,7 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 	fastify
 ): Promise<void> => {
 	fastify.post(
-		'/',
+		'/graphql',
 		{
 			schema: {
 				body: graphqlBodySchema,
