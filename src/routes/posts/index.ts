@@ -2,7 +2,7 @@ import { Constants } from './../../utils/constants';
 import { FastifyPluginAsyncJsonSchemaToTs } from '@fastify/type-provider-json-schema-to-ts';
 import { idParamSchema } from '../../utils/reusedSchemas';
 import {
-	//createPostBodySchema,
+	createPostBodySchema,
 	//changePostBodySchema
 } from './schema';
 import type { PostEntity } from '../../utils/DB/entities/DBPosts';
@@ -33,15 +33,27 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 		}
 	);
 
-	// fastify.post(
-	// 	'/',
-	// 	{
-	// 		schema: {
-	// 			body: createPostBodySchema,
-	// 		},
-	// 	},
-	// 	async function (request, reply): Promise<PostEntity> {}
-	// );
+	fastify.post(
+		'/',
+		{
+			schema: {
+				body: createPostBodySchema,
+			},
+		},
+		async function (request, reply): Promise<PostEntity> {
+			const { userId } = request.body;
+
+			const user = await this.db.users.findOne({ key: 'id', equals: userId });
+
+			if (!user) {
+				return reply.status(404).send({ message: Constants.USER_ERROR });
+			}
+
+			const newPost = (await this.db.posts.create(request.body)) || {};
+
+			return reply.send(newPost);
+		}
+	);
 
 	// fastify.delete(
 	// 	'/:id',
