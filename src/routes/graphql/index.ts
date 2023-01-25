@@ -208,9 +208,38 @@ const Query = new GraphQLObjectType({
 	},
 });
 
+const Mutation = new GraphQLObjectType({
+	name: 'Mutation',
+	fields: {
+		addUser: {
+			type: UserType,
+			args: {
+				firstName: { type: GraphQLString },
+				lastName: { type: GraphQLString },
+				email: { type: GraphQLString },
+			},
+			async resolve(
+				parent,
+				{ firstName, lastName, email }: Omit<UserEntity, 'id'>
+			) {
+				const body = JSON.stringify({ firstName, lastName, email });
+				const response = await fetch(routeUrl.users, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body,
+				});
+
+				return await response.json();
+			},
+		},
+	},
+});
+
 export const schema = new GraphQLSchema({
 	query: Query,
-	//mutation: Mutation,
+	mutation: Mutation,
 });
 
 const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
@@ -224,7 +253,7 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 			},
 		},
 		async function (request, reply) {
-			const { query, mutation, variables } = request.body;
+			const { query, variables } = request.body;
 
 			if (query) {
 				if (variables) {
@@ -233,16 +262,13 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 						source: query,
 						variableValues: variables,
 					});
+					console.log(result);
+
 					return reply.send(result);
 				}
 
 				const result = await graphql({ schema, source: query });
-				console.log(result);
-
 				return reply.send(result);
-			}
-			if (mutation) {
-				console.log(mutation);
 			}
 		}
 	);
