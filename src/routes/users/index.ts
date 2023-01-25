@@ -2,7 +2,9 @@ import { Constants } from './../../utils/constants';
 import { FastifyPluginAsyncJsonSchemaToTs } from '@fastify/type-provider-json-schema-to-ts';
 import { idParamSchema } from '../../utils/reusedSchemas';
 import {
-	createUserBodySchema, changeUserBodySchema, subscribeBodySchema,
+	createUserBodySchema,
+	changeUserBodySchema,
+	subscribeBodySchema,
 } from './schemas';
 import type { UserEntity } from '../../utils/DB/entities/DBUsers';
 

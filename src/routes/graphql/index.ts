@@ -1,17 +1,183 @@
+import { MemberTypeEntity } from './../../utils/DB/entities/DBMemberTypes';
+import { PostEntity } from './../../utils/DB/entities/DBPosts';
+import { ProfileEntity } from './../../utils/DB/entities/DBProfiles';
+import { UserEntity } from './../../utils/DB/entities/DBUsers';
 import { FastifyPluginAsyncJsonSchemaToTs } from '@fastify/type-provider-json-schema-to-ts';
 import { graphqlBodySchema } from './schema';
+import {
+	graphql,
+	GraphQLID,
+	GraphQLInt,
+	GraphQLList,
+	GraphQLNonNull,
+	GraphQLObjectType,
+	GraphQLSchema,
+	GraphQLString,
+} from 'graphql';
+import fetch from 'node-fetch';
+
+const baseURL = 'http://localhost';
+const port = 3000;
+
+const routeUrl = {
+	users: `${baseURL}:${port}/users`,
+	profiles: `${baseURL}:${port}/profiles`,
+	posts: `${baseURL}:${port}/posts`,
+	memberTypes: `${baseURL}:${port}/member-types`,
+};
+
+const UserType = new GraphQLObjectType({
+	name: 'User',
+	fields: () => ({
+		id: { type: GraphQLID },
+		firstName: { type: new GraphQLNonNull(GraphQLString) },
+		lastName: { type: new GraphQLNonNull(GraphQLString) },
+		email: { type: new GraphQLNonNull(GraphQLString) },
+		profile: {
+			type: ProfileType,
+			async resolve(parent: UserEntity, args: Record<'id', string>) {
+				const response = await fetch(`${routeUrl.profiles}`);
+				const profiles: { entities: ProfileEntity[] } = await response.json();
+				const targetProfile = profiles.entities.find(
+					(profile) => profile.userId === parent.id
+				);
+				return targetProfile;
+			},
+		},
+		posts: {
+			type: new GraphQLList(PostType),
+			async resolve(parent: UserEntity, args: Record<'id', string>) {
+				const response = await fetch(`${routeUrl.posts}`);
+				const posts: { entities: PostEntity[] } = await response.json();
+				const targetPosts = posts.entities.filter(
+					(post) => parent.id === post.userId
+				);
+				return targetPosts;
+			},
+		},
+		//TODO memberTypes
+	}),
+});
+
+const ProfileType = new GraphQLObjectType({
+	name: 'Profile',
+	fields: () => ({
+		id: { type: GraphQLID },
+		avatar: { type: new GraphQLNonNull(GraphQLString) },
+		sex: { type: new GraphQLNonNull(GraphQLString) },
+		birthday: { type: new GraphQLNonNull(GraphQLInt) },
+		country: { type: new GraphQLNonNull(GraphQLString) },
+		street: { type: new GraphQLNonNull(GraphQLString) },
+		city: { type: new GraphQLNonNull(GraphQLString) },
+		userId: { type: new GraphQLNonNull(GraphQLID) },
+		memberTypeId: { type: new GraphQLNonNull(GraphQLString) },
+	}),
+});
+
+const PostType = new GraphQLObjectType({
+	name: 'Post',
+	fields: () => ({
+		id: { type: GraphQLID },
+		content: { type: new GraphQLNonNull(GraphQLString) },
+		title: { type: new GraphQLNonNull(GraphQLString) },
+		userId: { type: new GraphQLNonNull(GraphQLID) },
+	}),
+});
+
+const MemberType = new GraphQLObjectType({
+	name: 'MemberType',
+	fields: () => ({
+		id: { type: GraphQLString },
+		discount: { type: new GraphQLNonNull(GraphQLInt) },
+		monthPostsLimit: { type: new GraphQLNonNull(GraphQLInt) },
+	}),
+});
+
+const Query = new GraphQLObjectType({
+	name: 'Query',
+	fields: {
+		users: {
+			type: new GraphQLList(UserType),
+			async resolve(): Promise<UserEntity[]> {
+				const response = await fetch(routeUrl.users);
+				const users: { entities: UserEntity[] } = await response.json();
+				return users.entities;
+			},
+		},
+		user: {
+			type: UserType,
+			args: { id: { type: GraphQLID } },
+			async resolve(parent: UserEntity, args: Record<'id', string>) {
+				const response = await fetch(`${routeUrl.users}/${args.id}`);
+
+				return await response.json();
+			},
+		},
+		profiles: {
+			type: new GraphQLList(ProfileType),
+			async resolve() {
+				const response = await fetch(routeUrl.profiles);
+				const profiles: { entities: ProfileEntity[] } = await response.json();
+				return profiles.entities;
+			},
+		},
+		posts: {
+			type: new GraphQLList(PostType),
+			async resolve() {
+				const response = await fetch(routeUrl.posts);
+				const posts: { entities: PostEntity[] } = await response.json();
+				return posts.entities;
+			},
+		},
+		memberTypes: {
+			type: new GraphQLList(MemberType),
+			async resolve() {
+				const response = await fetch(routeUrl.memberTypes);
+				const memberTypes: { entities: MemberTypeEntity[] } =
+					await response.json();
+				return memberTypes.entities;
+			},
+		},
+	},
+});
+
+export const schema = new GraphQLSchema({
+	query: Query,
+	//mutation: Mutation,
+});
 
 const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 	fastify
 ): Promise<void> => {
 	fastify.post(
-		'/graphql',
+		'/',
 		{
 			schema: {
 				body: graphqlBodySchema,
 			},
 		},
-		async function (request, reply) {}
+		async function (request, reply) {
+			const { query, mutation, variables } = request.body;
+
+			if (query) {
+				if (variables) {
+					const result = await graphql({
+						schema,
+						source: query,
+						variableValues: variables,
+					});
+					return reply.send(result);
+				}
+
+				const result = await graphql({ schema, source: query });
+				console.log(result);
+
+				return reply.send(result);
+			}
+			if (mutation) {
+				console.log(mutation);
+			}
+		}
 	);
 };
 
