@@ -7,6 +7,7 @@ import { graphqlBodySchema } from './schema';
 import {
 	graphql,
 	GraphQLID,
+	GraphQLInputObjectType,
 	GraphQLInt,
 	GraphQLList,
 	GraphQLNonNull,
@@ -93,6 +94,26 @@ const MemberType = new GraphQLObjectType({
 	}),
 });
 
+const EntityByIdType = new GraphQLObjectType({
+	name: 'EntitysById',
+	fields: () => ({
+		user: { type: UserType },
+		profile: { type: ProfileType },
+		post: { type: PostType },
+		memberType: { type: MemberType },
+	}),
+});
+
+const EntityByIdInput = new GraphQLInputObjectType({
+	name: 'EntityByIdInput',
+	fields: {
+		userId: { type: new GraphQLNonNull(GraphQLID) },
+		profileId: { type: new GraphQLNonNull(GraphQLID) },
+		postId: { type: new GraphQLNonNull(GraphQLID) },
+		memberTypeId: { type: new GraphQLNonNull(GraphQLString) },
+	},
+});
+
 const Query = new GraphQLObjectType({
 	name: 'Query',
 	fields: {
@@ -121,12 +142,30 @@ const Query = new GraphQLObjectType({
 				return profiles.entities;
 			},
 		},
+		profile: {
+			type: ProfileType,
+			args: { id: { type: GraphQLID } },
+			async resolve(parent: UserEntity, args: Record<'id', string>) {
+				const response = await fetch(`${routeUrl.profiles}/${args.id}`);
+
+				return await response.json();
+			},
+		},
 		posts: {
 			type: new GraphQLList(PostType),
 			async resolve() {
 				const response = await fetch(routeUrl.posts);
 				const posts: { entities: PostEntity[] } = await response.json();
 				return posts.entities;
+			},
+		},
+		post: {
+			type: PostType,
+			args: { id: { type: GraphQLID } },
+			async resolve(parent: UserEntity, args: Record<'id', string>) {
+				const response = await fetch(`${routeUrl.posts}/${args.id}`);
+
+				return await response.json();
 			},
 		},
 		memberTypes: {
@@ -137,6 +176,19 @@ const Query = new GraphQLObjectType({
 					await response.json();
 				return memberTypes.entities;
 			},
+		},
+		memberType: {
+			type: MemberType,
+			args: { id: { type: GraphQLString } },
+			async resolve(parent: UserEntity, args: Record<'id', string>) {
+				const response = await fetch(`${routeUrl.memberTypes}/${args.id}`);
+
+				return await response.json();
+			},
+		},
+		getEntitlesById: {
+			type: EntityByIdType,
+			args: { input: { type: EntityByIdInput } },
 		},
 	},
 });
