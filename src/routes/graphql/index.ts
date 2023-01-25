@@ -219,7 +219,7 @@ const Mutation = new GraphQLObjectType({
 				email: { type: new GraphQLNonNull(GraphQLString) },
 			},
 			async resolve(
-				parent,
+				parent: unknown,
 				{ firstName, lastName, email }: Omit<UserEntity, 'id'>
 			) {
 				const body = JSON.stringify({ firstName, lastName, email });
@@ -247,7 +247,7 @@ const Mutation = new GraphQLObjectType({
 				memberTypeId: { type: new GraphQLNonNull(GraphQLString) },
 			},
 			async resolve(
-				parent,
+				parent: unknown,
 				{
 					avatar,
 					sex,
@@ -270,6 +270,29 @@ const Mutation = new GraphQLObjectType({
 					memberTypeId,
 				});
 				const response = await fetch(routeUrl.profiles, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body,
+				});
+
+				return await response.json();
+			},
+		},
+		addPost: {
+			type: PostType,
+			args: {
+				content: { type: new GraphQLNonNull(GraphQLString) },
+				title: { type: new GraphQLNonNull(GraphQLString) },
+				userId: { type: new GraphQLNonNull(GraphQLID) },
+			},
+			async resolve(
+				parent: unknown,
+				{ content, title, userId }: Omit<PostEntity, 'id'>
+			) {
+				const body = JSON.stringify({ content, title, userId });
+				const response = await fetch(routeUrl.posts, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
