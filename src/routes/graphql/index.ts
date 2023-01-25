@@ -56,7 +56,18 @@ const UserType = new GraphQLObjectType({
 				return targetPosts;
 			},
 		},
-		//TODO memberTypes
+		memberType: {
+			type: GraphQLString,
+			async resolve(parent: UserEntity, args: Record<'id', string>) {
+				const response = await fetch(`${routeUrl.profiles}`);
+				const profiles: { entities: ProfileEntity[] } = await response.json();
+				const profile = profiles.entities.find(
+					(profile) => parent.id === profile.userId
+				);
+
+				return profile?.memberTypeId;
+			},
+		},
 	}),
 });
 
