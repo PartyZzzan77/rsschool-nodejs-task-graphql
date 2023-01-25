@@ -214,9 +214,9 @@ const Mutation = new GraphQLObjectType({
 		addUser: {
 			type: UserType,
 			args: {
-				firstName: { type: GraphQLString },
-				lastName: { type: GraphQLString },
-				email: { type: GraphQLString },
+				firstName: { type: new GraphQLNonNull(GraphQLString) },
+				lastName: { type: new GraphQLNonNull(GraphQLString) },
+				email: { type: new GraphQLNonNull(GraphQLString) },
 			},
 			async resolve(
 				parent,
@@ -224,6 +224,52 @@ const Mutation = new GraphQLObjectType({
 			) {
 				const body = JSON.stringify({ firstName, lastName, email });
 				const response = await fetch(routeUrl.users, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body,
+				});
+
+				return await response.json();
+			},
+		},
+		addProfile: {
+			type: ProfileType,
+			args: {
+				avatar: { type: new GraphQLNonNull(GraphQLString) },
+				sex: { type: new GraphQLNonNull(GraphQLString) },
+				birthday: { type: new GraphQLNonNull(GraphQLInt) },
+				country: { type: new GraphQLNonNull(GraphQLString) },
+				street: { type: new GraphQLNonNull(GraphQLString) },
+				city: { type: new GraphQLNonNull(GraphQLString) },
+				userId: { type: new GraphQLNonNull(GraphQLID) },
+				memberTypeId: { type: new GraphQLNonNull(GraphQLString) },
+			},
+			async resolve(
+				parent,
+				{
+					avatar,
+					sex,
+					birthday,
+					country,
+					street,
+					city,
+					userId,
+					memberTypeId,
+				}: Omit<ProfileEntity, 'id'>
+			) {
+				const body = JSON.stringify({
+					avatar,
+					sex,
+					birthday,
+					country,
+					street,
+					city,
+					userId,
+					memberTypeId,
+				});
+				const response = await fetch(routeUrl.profiles, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
