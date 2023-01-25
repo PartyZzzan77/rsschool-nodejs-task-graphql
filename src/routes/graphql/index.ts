@@ -95,7 +95,7 @@ const MemberType = new GraphQLObjectType({
 });
 
 const EntityByIdType = new GraphQLObjectType({
-	name: 'EntitysById',
+	name: 'EntitiesById',
 	fields: () => ({
 		user: { type: UserType },
 		profile: { type: ProfileType },
@@ -189,6 +189,10 @@ const Query = new GraphQLObjectType({
 		getEntitlesById: {
 			type: EntityByIdType,
 			args: { input: { type: EntityByIdInput } },
+		},
+		getUserById: {
+			type: UserType,
+			args: { id: { type: new GraphQLNonNull(GraphQLID) } },
 		},
 	},
 });
