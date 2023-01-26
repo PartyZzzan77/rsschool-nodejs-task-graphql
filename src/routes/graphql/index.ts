@@ -282,6 +282,22 @@ const updateMemberDtoInput = new GraphQLInputObjectType({
 	},
 });
 
+const subscribeUserDtoInput = new GraphQLInputObjectType({
+	name: 'subscribeUserDtoInput',
+	fields: {
+		id: { type: new GraphQLNonNull(GraphQLID) },
+		userId: { type: new GraphQLNonNull(GraphQLID) },
+	},
+});
+
+const unSubscribeUserDtoInput = new GraphQLInputObjectType({
+	name: 'unSubscribeUserDtoInput',
+	fields: {
+		id: { type: new GraphQLNonNull(GraphQLID) },
+		userId: { type: new GraphQLNonNull(GraphQLID) },
+	},
+});
+
 const Mutation = new GraphQLObjectType({
 	name: 'Mutation',
 	fields: {
@@ -432,6 +448,50 @@ const Mutation = new GraphQLObjectType({
 					},
 					body,
 				});
+
+				return await response.json();
+			},
+		},
+		subscribeUser: {
+			type: UserType,
+			args: { input: { type: subscribeUserDtoInput } },
+			async resolve(
+				parent: unknown,
+				{ input }: Record<'input', Pick<ProfileEntity, 'id' | 'userId'>>
+			) {
+				const body = JSON.stringify({ ...input });
+				const response = await fetch(
+					`${routeUrl.users}/${input.id}/subscribeTo`,
+					{
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body,
+					}
+				);
+
+				return await response.json();
+			},
+		},
+		unSubscribeUser: {
+			type: UserType,
+			args: { input: { type: unSubscribeUserDtoInput } },
+			async resolve(
+				parent: unknown,
+				{ input }: Record<'input', Pick<ProfileEntity, 'id' | 'userId'>>
+			) {
+				const body = JSON.stringify({ ...input });
+				const response = await fetch(
+					`${routeUrl.users}/${input.id}/unsubscribeFrom`,
+					{
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body,
+					}
+				);
 
 				return await response.json();
 			},
