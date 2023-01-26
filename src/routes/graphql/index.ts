@@ -241,6 +241,20 @@ const addProfileDtoInput = new GraphQLInputObjectType({
 	},
 });
 
+const updateProfileDtoInput = new GraphQLInputObjectType({
+	name: 'updateProfileDtoInput',
+	fields: {
+		id: { type: new GraphQLNonNull(GraphQLID) },
+		avatar: { type: GraphQLString },
+		sex: { type: GraphQLString },
+		birthday: { type: GraphQLInt },
+		country: { type: GraphQLString },
+		street: { type: GraphQLString },
+		city: { type: GraphQLString },
+		memberTypeId: { type: GraphQLString },
+	},
+});
+
 const addPostDtoInput = new GraphQLInputObjectType({
 	name: 'addPostDtoInput',
 	fields: {
@@ -337,6 +351,25 @@ const Mutation = new GraphQLObjectType({
 			async resolve(parent: unknown, { input }: Record<'input', UserEntity>) {
 				const body = JSON.stringify({ ...input });
 				const response = await fetch(`${routeUrl.users}/${input.id}`, {
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body,
+				});
+
+				return await response.json();
+			},
+		},
+		updateProfile: {
+			type: ProfileType,
+			args: { input: { type: updateProfileDtoInput } },
+			async resolve(
+				parent: unknown,
+				{ input }: Record<'input', Omit<ProfileEntity, 'userId'>>
+			) {
+				const body = JSON.stringify({ ...input });
+				const response = await fetch(`${routeUrl.profiles}/${input.id}`, {
 					method: 'PATCH',
 					headers: {
 						'Content-Type': 'application/json',
