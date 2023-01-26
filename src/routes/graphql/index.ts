@@ -217,6 +217,16 @@ const addUserDtoInput = new GraphQLInputObjectType({
 	},
 });
 
+const updateUserDtoInput = new GraphQLInputObjectType({
+	name: 'updateUserDtoInput',
+	fields: {
+		id: { type: new GraphQLNonNull(GraphQLID) },
+		firstName: { type: GraphQLString },
+		lastName: { type: GraphQLString },
+		email: { type: GraphQLString },
+	},
+});
+
 const addProfileDtoInput = new GraphQLInputObjectType({
 	name: 'addProfileDtoInput',
 	fields: {
@@ -312,6 +322,22 @@ const Mutation = new GraphQLObjectType({
 				const body = JSON.stringify({ content, title, userId });
 				const response = await fetch(routeUrl.posts, {
 					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body,
+				});
+
+				return await response.json();
+			},
+		},
+		updateUser: {
+			type: UserType,
+			args: { input: { type: updateUserDtoInput } },
+			async resolve(parent: unknown, { input }: Record<'input', UserEntity>) {
+				const body = JSON.stringify({ ...input });
+				const response = await fetch(`${routeUrl.users}/${input.id}`, {
+					method: 'PATCH',
 					headers: {
 						'Content-Type': 'application/json',
 					},
