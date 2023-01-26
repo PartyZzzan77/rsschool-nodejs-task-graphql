@@ -56,6 +56,26 @@ const UserType = new GraphQLObjectType({
 				return targetPosts;
 			},
 		},
+		userSubscribedTo: {
+			type: new GraphQLList(FollowerType),
+			async resolve(parent: UserEntity, args: Record<'id', string>) {
+				const response = await fetch(`${routeUrl.users}`);
+				const subscribes: { entities: UserEntity[] } = await response.json();
+				const targetSubscribes: Omit<UserEntity, 'subscribedToUserIds'>[] =
+					subscribes.entities.filter((subscriber) => {
+						if (subscriber.subscribedToUserIds.includes(parent.id)) {
+							return {
+								id: subscriber.id,
+								firstName: subscriber.firstName,
+								lastName: subscriber.lastName,
+								email: subscriber.email,
+							};
+						}
+					});
+
+				return targetSubscribes;
+			},
+		},
 		memberType: {
 			type: GraphQLString,
 			async resolve(parent: UserEntity, args: Record<'id', string>) {
@@ -69,6 +89,16 @@ const UserType = new GraphQLObjectType({
 			},
 		},
 	}),
+});
+
+const FollowerType = new GraphQLObjectType({
+	name: 'FollowerType',
+	fields: {
+		id: { type: GraphQLID },
+		firstName: { type: GraphQLString },
+		lastName: { type: GraphQLString },
+		email: { type: GraphQLString },
+	},
 });
 
 const ProfileType = new GraphQLObjectType({
@@ -122,6 +152,13 @@ const EntityByIdInput = new GraphQLInputObjectType({
 		profileId: { type: new GraphQLNonNull(GraphQLID) },
 		postId: { type: new GraphQLNonNull(GraphQLID) },
 		memberTypeId: { type: new GraphQLNonNull(GraphQLString) },
+	},
+});
+
+const UsersWithFollowersType = new GraphQLObjectType({
+	name: 'UsersWithFollowersType',
+	fields: {
+		userSubscribedTo: { type: new GraphQLList(UserType) },
 	},
 });
 
@@ -204,6 +241,17 @@ const Query = new GraphQLObjectType({
 		getUserById: {
 			type: UserType,
 			args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+		},
+		getUsersWithFollowers: {
+			type: UsersWithFollowersType,
+			async resolve(parent: UserEntity, args: unknown) {
+				const response = await fetch(`${routeUrl.users}`);
+				const users: { entities: UserEntity[] } = await response.json();
+				const subscribers = users.entities.filter((subscriber) =>
+					subscriber.subscribedToUserIds.includes(parent.id)
+				);
+				return subscribers;
+			},
 		},
 	},
 });
