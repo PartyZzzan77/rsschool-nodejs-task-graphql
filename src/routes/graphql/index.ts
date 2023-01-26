@@ -208,20 +208,49 @@ const Query = new GraphQLObjectType({
 	},
 });
 
+const addUserDtoInput = new GraphQLInputObjectType({
+	name: 'addUserDtoInput',
+	fields: {
+		firstName: { type: new GraphQLNonNull(GraphQLString) },
+		lastName: { type: new GraphQLNonNull(GraphQLString) },
+		email: { type: new GraphQLNonNull(GraphQLString) },
+	},
+});
+
+const addProfileDtoInput = new GraphQLInputObjectType({
+	name: 'addProfileDtoInput',
+	fields: {
+		avatar: { type: new GraphQLNonNull(GraphQLString) },
+		sex: { type: new GraphQLNonNull(GraphQLString) },
+		birthday: { type: new GraphQLNonNull(GraphQLInt) },
+		country: { type: new GraphQLNonNull(GraphQLString) },
+		street: { type: new GraphQLNonNull(GraphQLString) },
+		city: { type: new GraphQLNonNull(GraphQLString) },
+		userId: { type: new GraphQLNonNull(GraphQLID) },
+		memberTypeId: { type: new GraphQLNonNull(GraphQLString) },
+	},
+});
+
+const addPostDtoInput = new GraphQLInputObjectType({
+	name: 'addPostDtoInput',
+	fields: {
+		content: { type: new GraphQLNonNull(GraphQLString) },
+		title: { type: new GraphQLNonNull(GraphQLString) },
+		userId: { type: new GraphQLNonNull(GraphQLID) },
+	},
+});
+
 const Mutation = new GraphQLObjectType({
 	name: 'Mutation',
 	fields: {
 		addUser: {
 			type: UserType,
-			args: {
-				firstName: { type: new GraphQLNonNull(GraphQLString) },
-				lastName: { type: new GraphQLNonNull(GraphQLString) },
-				email: { type: new GraphQLNonNull(GraphQLString) },
-			},
+			args: { input: { type: addUserDtoInput } },
 			async resolve(
 				parent: unknown,
-				{ firstName, lastName, email }: Omit<UserEntity, 'id'>
+				{ input }: Record<'input', Omit<UserEntity, 'id'>>
 			) {
+				const { firstName, lastName, email } = input;
 				const body = JSON.stringify({ firstName, lastName, email });
 				const response = await fetch(routeUrl.users, {
 					method: 'POST',
@@ -236,19 +265,12 @@ const Mutation = new GraphQLObjectType({
 		},
 		addProfile: {
 			type: ProfileType,
-			args: {
-				avatar: { type: new GraphQLNonNull(GraphQLString) },
-				sex: { type: new GraphQLNonNull(GraphQLString) },
-				birthday: { type: new GraphQLNonNull(GraphQLInt) },
-				country: { type: new GraphQLNonNull(GraphQLString) },
-				street: { type: new GraphQLNonNull(GraphQLString) },
-				city: { type: new GraphQLNonNull(GraphQLString) },
-				userId: { type: new GraphQLNonNull(GraphQLID) },
-				memberTypeId: { type: new GraphQLNonNull(GraphQLString) },
-			},
+			args: { input: { type: addProfileDtoInput } },
 			async resolve(
 				parent: unknown,
-				{
+				{ input }: Record<'input', Omit<ProfileEntity, 'id'>>
+			) {
+				const {
 					avatar,
 					sex,
 					birthday,
@@ -257,8 +279,7 @@ const Mutation = new GraphQLObjectType({
 					city,
 					userId,
 					memberTypeId,
-				}: Omit<ProfileEntity, 'id'>
-			) {
+				} = input;
 				const body = JSON.stringify({
 					avatar,
 					sex,
@@ -282,15 +303,12 @@ const Mutation = new GraphQLObjectType({
 		},
 		addPost: {
 			type: PostType,
-			args: {
-				content: { type: new GraphQLNonNull(GraphQLString) },
-				title: { type: new GraphQLNonNull(GraphQLString) },
-				userId: { type: new GraphQLNonNull(GraphQLID) },
-			},
+			args: { input: { type: addPostDtoInput } },
 			async resolve(
 				parent: unknown,
-				{ content, title, userId }: Omit<PostEntity, 'id'>
+				{ input }: Record<'input', Omit<PostEntity, 'id'>>
 			) {
+				const { content, title, userId } = input;
 				const body = JSON.stringify({ content, title, userId });
 				const response = await fetch(routeUrl.posts, {
 					method: 'POST',
