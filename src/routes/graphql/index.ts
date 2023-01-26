@@ -273,6 +273,15 @@ const updatePostDtoInput = new GraphQLInputObjectType({
 	},
 });
 
+const updateMemberDtoInput = new GraphQLInputObjectType({
+	name: 'updateMemberDtoInput',
+	fields: {
+		id: { type: new GraphQLNonNull(GraphQLID) },
+		discount: { type: GraphQLInt },
+		monthPostsLimit: { type: GraphQLInt },
+	},
+});
+
 const Mutation = new GraphQLObjectType({
 	name: 'Mutation',
 	fields: {
@@ -398,6 +407,25 @@ const Mutation = new GraphQLObjectType({
 			) {
 				const body = JSON.stringify({ ...input });
 				const response = await fetch(`${routeUrl.posts}/${input.id}`, {
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body,
+				});
+
+				return await response.json();
+			},
+		},
+		updateMemberType: {
+			type: MemberType,
+			args: { input: { type: updateMemberDtoInput } },
+			async resolve(
+				parent: unknown,
+				{ input }: Record<'input', MemberTypeEntity>
+			) {
+				const body = JSON.stringify({ ...input });
+				const response = await fetch(`${routeUrl.memberTypes}/${input.id}`, {
 					method: 'PATCH',
 					headers: {
 						'Content-Type': 'application/json',
