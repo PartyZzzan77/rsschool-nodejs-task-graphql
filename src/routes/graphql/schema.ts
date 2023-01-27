@@ -1,3 +1,7 @@
+import { GraphQLSchema } from 'graphql';
+import { Query } from './SchemaEntities/Querys/Query';
+import { Mutation } from './SchemaEntities/Mutations/Mutation';
+
 export const graphqlBodySchema = {
 	type: 'object',
 	properties: {
@@ -32,3 +36,8 @@ export const graphqlBodySchema = {
 		},
 	],
 } as const;
+
+export const schema = new GraphQLSchema({
+	query: Query,
+	mutation: Mutation,
+});
