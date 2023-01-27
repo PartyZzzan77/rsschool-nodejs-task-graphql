@@ -543,14 +543,14 @@
 									"response": []
 								},
 								{
-									"name": "allUsers 2.3 2.5",
+									"name": "getUsersWithPosts 2.3",
 									"request": {
 										"method": "POST",
 										"header": [],
 										"body": {
 											"mode": "graphql",
 											"graphql": {
-												"query": "{\n  users {\n      id\n      firstName\n      lastName\n    posts {\n      id\n    }\n    profile {\n      id\n    }\n    userSubscribedTo{\n        id\n        firstName\n        lastName\n    }\n    memberType\n  }\n}",
+												"query": "{\n  users {\n      id\n      firstName\n      lastName\n    posts {\n      id\n      title\n      content\n      userId\n    }\n  }\n}",
 												"variables": ""
 											}
 										},
@@ -595,15 +595,15 @@
 									"response": []
 								},
 								{
-									"name": "entityWithId",
+									"name": "allUsersWithUserSubscribedTo 2.5",
 									"request": {
 										"method": "POST",
 										"header": [],
 										"body": {
 											"mode": "graphql",
 											"graphql": {
-												"query": "query($id:ID!){\n    user(id:$id){\n        id\n    }\n}",
-												"variables": "{\n    \"id\":\"35eb71aa-ac6b-43c2-8c0f-6ee5a5d57118\"\n}"
+												"query": "{\n  users {\n      id\n      firstName\n      lastName\n    posts {\n      id\n    }\n    profile {\n      id\n    }\n    userSubscribedTo{\n        id\n        firstName\n        lastName\n    }\n    memberType\n  }\n}",
+												"variables": ""
 											}
 										},
 										"url": {
@@ -621,10 +621,80 @@
 									"response": []
 								},
 								{
-									"name": "usersWithFollowers 2.5",
+									"name": "usersByIDWithSubscribedToUser 2.6",
 									"request": {
-										"method": "GET",
-										"header": []
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "{\n  user(id: \"3180a824-e817-4c02-97ed-c642650a2a47\") {\n    id\n    firstName\n    lastName\n    email\n    subscribedToUser {\n      posts {\n        id\n        title\n        content\n        userId\n      }\n    }\n  }\n}\n",
+												"variables": ""
+											}
+										},
+										"url": {
+											"raw": "http://localhost:3000/graphql",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "allUsersWithSubscriptions 2.7",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "{\n  users {\n    id\n    firstName\n    lastName\n    userSubscribedTo {\n      id\n      firstName\n      lastName\n      userSubscribedTo {\n        id\n        firstName\n        lastName\n      }\n    }\n    subscribedToUser {\n      id\n      firstName\n      lastName\n      subscribedToUser {\n        id\n        firstName\n        lastName\n      }\n    }\n  }\n}\n",
+												"variables": ""
+											}
+										},
+										"url": {
+											"raw": "http://localhost:3000/graphql",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "depthLimitRequest",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "{\n  users {\n    id\n    firstName\n    userSubscribedTo {\n      id\n      firstName\n      userSubscribedTo {\n        id\n        firstName\n        userSubscribedTo {\n          id\n          firstName\n          userSubscribedTo {\n            id\n            firstName\n            userSubscribedTo {\n              id\n              firstName\n              userSubscribedTo {\n                id\n                firstName\n                userSubscribedTo {\n                  id\n                  firstName\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n",
+												"variables": ""
+											}
+										},
+										"url": {
+											"raw": "http://localhost:3000/graphql",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"graphql"
+											]
+										}
 									},
 									"response": []
 								}

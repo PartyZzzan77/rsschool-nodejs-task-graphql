@@ -2,13 +2,11 @@ import fetch from 'node-fetch';
 import {
 	GraphQLID,
 	GraphQLList,
-	GraphQLNonNull,
+
 	GraphQLObjectType,
 	GraphQLString,
 } from 'graphql';
 import {
-	EntityByIdInput,
-	EntityByIdType,
 	MemberType,
 	PostType,
 	ProfileType,
@@ -92,14 +90,6 @@ export const Query = new GraphQLObjectType({
 
 				return await response.json();
 			},
-		},
-		getEntitlesById: {
-			type: EntityByIdType,
-			args: { input: { type: EntityByIdInput } },
-		},
-		getUserById: {
-			type: UserType,
-			args: { id: { type: new GraphQLNonNull(GraphQLID) } },
 		},
 		getUsersWithFollowers: {
 			type: UsersWithFollowersType,
