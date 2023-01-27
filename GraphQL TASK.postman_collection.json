@@ -1,0 +1,887 @@
+{
+	"info": {
+		"_postman_id": "ac58f0ba-314d-4857-8bb8-4e7046342d47",
+		"name": "GraphQL TASK",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22334113"
+	},
+	"item": [
+		{
+			"name": "REST",
+			"item": [
+				{
+					"name": "USERS",
+					"item": [
+						{
+							"name": "allUsers",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createUser",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstName\": \"Amigo\" ,\n\t\t\"lastName\": \"Doe\",\n\t\t\"email\": \"amigo@test.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/users/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findUserById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/users/c80b278a-9659-4ef9-a57e-5b26755fece4",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										"c80b278a-9659-4ef9-a57e-5b26755fece4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "patchUser",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n   \n\t\t\"email\": \"amigo@test1212.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/users/2134d130-e8bc-4372-af7e-35016cb46fc9",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										"2134d130-e8bc-4372-af7e-35016cb46fc9"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "subscribeUser",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\":\"c7f2e095-7e9c-4ce0-9946-8a511e9cb12b\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/users/92238657-e851-4865-81f4-340615c109f0/subscribeTo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										"92238657-e851-4865-81f4-340615c109f0",
+										"subscribeTo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteUser",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/users/1b82150f-31d9-47e7-801d-e7f4d6a7d333",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										"1b82150f-31d9-47e7-801d-e7f4d6a7d333"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "unSubscribeUser",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\":\"f61cca22-7abd-443c-a006-1ca88f3abec0\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/users/9440e018-7fe8-4785-af81-6f645b527e5a/unsubscribeFrom",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										"9440e018-7fe8-4785-af81-6f645b527e5a",
+										"unsubscribeFrom"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "POSTS",
+					"item": [
+						{
+							"name": "allPosts",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/posts/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"posts",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findPostById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/posts/33814ca8-3923-4217-8979-5420c770faa5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"posts",
+										"33814ca8-3923-4217-8979-5420c770faa5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createPost",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": " {\n  \n    \"content\": \"Lorem ipsum\",\n    \"title\": \"Head\",\n    \"userId\": \"92a056d8-94a9-4627-99f3-7f0f9c07aece\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/posts",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"posts"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PROFILES",
+					"item": [
+						{
+							"name": "allProfiles",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/profiles",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"profiles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findProfileById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/profiles/:id",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"profiles",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createProfile",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"avatar\":\"img.png\",\n    \"sex\":\"male\",\n    \"birthday\":12121212,\n    \"country\":\"Argentina\",\n    \"street\":\"Kolotuskina\",\n    \"city\":\"Yes\",\n    \"userId\":\"58ec2589-55ca-4c0d-b6c6-8b87caa79f8f\",\n    \"memberTypeId\":\"asasas\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/profiles",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"profiles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteProfile",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/profiles/:id",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"profiles",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "editProfile",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"city\":\"London\",\n    \"memberTypeId\":\"bussines\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/profiles/84088a10-2632-4340-8b46-4d0afd2e4480",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"profiles",
+										"84088a10-2632-4340-8b46-4d0afd2e4480"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "MEMBER_TYPE",
+					"item": [
+						{
+							"name": "allMemberTypes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/member-types",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"member-types"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findMemberTypeById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/member-type/:id",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"member-type",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "editProfile",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"discount\": 5,\n\t\"monthPostsLimit\": 10,\n\t\"profileIds\": []\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "editMemberType",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GRAPHQL",
+					"item": [
+						{
+							"name": "QUERY",
+							"item": [
+								{
+									"name": "allEntities 2.1",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "{\n    users {\n      id\n      firstName\n    }\n    profiles {\n      id\n    }\n    posts {\n      id\n    }\n    memberTypes {\n      id\n    }\n}\n",
+												"variables": ""
+											}
+										},
+										"url": {
+											"raw": "http://localhost:3000/graphql",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "getEntitysById 2.2",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "query getEntitlesById($userId:ID!,$profileId:ID!,$postId:ID!,$memberTypeId:String!){\n    user(id:$userId){\n        id\n    }\n    profile(id:$profileId){\n        id\n    }\n    post(id:$postId){\n        id\n    }\n    memberType(id:$memberTypeId){\n        id\n    }\n}",
+												"variables": "{\n    \"userId\":\"2b56e9dd-c696-470e-aeaf-52217fd677c6\",\n    \"profileId\":\"7b793b01-a4ed-4791-ade6-d4852cb13a95\",\n    \"postId\":\"96029e5b-1777-4ae0-ab20-60a317ac2b5e\",\n    \"memberTypeId\":\"basic\"\n}"
+											}
+										},
+										"url": {
+											"raw": "http://localhost:3000/graphql",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "allUsers 2.3 2.5",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "{\n  users {\n      id\n      firstName\n      lastName\n    posts {\n      id\n    }\n    profile {\n      id\n    }\n    userSubscribedTo{\n        id\n        firstName\n        lastName\n    }\n    memberType\n  }\n}",
+												"variables": ""
+											}
+										},
+										"url": {
+											"raw": "http://localhost:3000/graphql",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "getUserById 2.4",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "query getUserById($id: ID!) {\n  user(id: $id) {\n    id\n    posts {\n      title\n    }\n    profile {\n      city\n    }\n    memberType\n  }\n}\n",
+												"variables": "{\n    \"id\":\"ec05571f-e6ac-419d-be87-8a1596a24c3b\"\n}"
+											}
+										},
+										"url": {
+											"raw": "http://localhost:3000/graphql",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "entityWithId",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "query($id:ID!){\n    user(id:$id){\n        id\n    }\n}",
+												"variables": "{\n    \"id\":\"35eb71aa-ac6b-43c2-8c0f-6ee5a5d57118\"\n}"
+											}
+										},
+										"url": {
+											"raw": "http://localhost:3000/graphql",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"graphql"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "usersWithFollowers 2.5",
+									"request": {
+										"method": "GET",
+										"header": []
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "MUTATION",
+							"item": [
+								{
+									"name": "CREATE",
+									"item": [
+										{
+											"name": "addPost 2.10",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "graphql",
+													"graphql": {
+														"query": "mutation addPost {\n  addPost(input: { content: \"Lorem ipsum\", title: \"Head\", userId: \"45696f76-d88b-49df-bb79-578fdd776ad7\" }) {\n    id\n    content\n    title\n  }\n}\n",
+														"variables": ""
+													}
+												},
+												"url": {
+													"raw": "http://localhost:3000/graphql",
+													"protocol": "http",
+													"host": [
+														"localhost"
+													],
+													"port": "3000",
+													"path": [
+														"graphql"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "addUser 2.8",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "graphql",
+													"graphql": {
+														"query": "mutation addUser {\n  addUser(\n    input: { firstName: \"Amigo\", lastName: \"Doe\", email: \"amigo@test.com\" }\n  ) {\n    id\n    firstName\n    lastName\n    email\n  }\n}\n",
+														"variables": ""
+													}
+												},
+												"url": {
+													"raw": "http://localhost:3000/graphql",
+													"protocol": "http",
+													"host": [
+														"localhost"
+													],
+													"port": "3000",
+													"path": [
+														"graphql"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "addProfile 2.9",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "graphql",
+													"graphql": {
+														"query": "mutation addProfile {\n  addProfile(\n    input: {\n      avatar: \"img.png\"\n      sex: \"male\"\n      birthday: 12121212\n      country: \"Argentina\"\n      street: \"Kolotuskina\"\n      city: \"Yes\"\n      userId: \"54426286-ad6e-43f5-bfa6-343ab1bad9bd\"\n      memberTypeId: \"business\"\n    }\n  ) {\n    id\n    userId\n    memberTypeId\n    sex\n    birthday\n    country\n    street\n    city\n  }\n}\n",
+														"variables": ""
+													}
+												},
+												"url": {
+													"raw": "http://localhost:3000/graphql",
+													"protocol": "http",
+													"host": [
+														"localhost"
+													],
+													"port": "3000",
+													"path": [
+														"graphql"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "UPDATE",
+									"item": [
+										{
+											"name": "updateUser 2.12",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "graphql",
+													"graphql": {
+														"query": "mutation updateUser {\n  updateUser(\n    input: {\n      id: \"caad5514-f1f5-43d4-8757-4e826b219dcf\"\n      firstName: \"Amigo2\"\n      lastName: \"Doe2\"\n      email: \"amigo@test2.com\"\n    }\n  ) {\n    id\n    firstName\n    lastName\n    email\n  }\n}\n",
+														"variables": ""
+													}
+												},
+												"url": {
+													"raw": "http://localhost:3000/graphql",
+													"protocol": "http",
+													"host": [
+														"localhost"
+													],
+													"port": "3000",
+													"path": [
+														"graphql"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "updateProfile 2.13",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "graphql",
+													"graphql": {
+														"query": "mutation updateProfile {\n  updateProfile(\n    input: {\n      id: \"aaba028d-07df-480b-9c6b-1d44d7ba81f8\"\n      avatar: \"img1.png\"\n      sex: \"male1\"\n      birthday: 5555\n      country: \"Mexico\"\n      street: \"Pushkina\"\n      city: \"No\"\n      memberTypeId: \"basic\"\n    }\n  ) {\n    id\n    sex\n    birthday\n    country\n    street\n    city\n  }\n}\n",
+														"variables": ""
+													}
+												},
+												"url": {
+													"raw": "http://localhost:3000/graphql",
+													"protocol": "http",
+													"host": [
+														"localhost"
+													],
+													"port": "3000",
+													"path": [
+														"graphql"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "updatePost 2.14",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "graphql",
+													"graphql": {
+														"query": "mutation updatePost {\n  updatePost(\n    input: {\n      id: \"ca4bef9e-38b1-403f-a29b-c438fc5d6097\"\n      content: \"Lorem ipsum2\",\n      title: \"Head2\",\n    }\n  ) {\n    id\n    content\n    title\n  }\n}\n",
+														"variables": ""
+													}
+												},
+												"url": {
+													"raw": "http://localhost:3000/graphql",
+													"protocol": "http",
+													"host": [
+														"localhost"
+													],
+													"port": "3000",
+													"path": [
+														"graphql"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "updateMemberType 2.15",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "graphql",
+													"graphql": {
+														"query": "mutation updateMemberType {\n  updateMemberType(\n    input: {\n      id: \"basic\"\n      discount: 30\n      monthPostsLimit: 40\n    }\n  ) {\n    id\n    discount\n    monthPostsLimit\n  }\n}\n",
+														"variables": ""
+													}
+												},
+												"url": {
+													"raw": "http://localhost:3000/graphql",
+													"protocol": "http",
+													"host": [
+														"localhost"
+													],
+													"port": "3000",
+													"path": [
+														"graphql"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "subscribeUser",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "graphql",
+													"graphql": {
+														"query": "mutation subscribeUser {\n  subscribeUser(\n    input: {\n      id: \"fac9ebbf-c815-4ef5-a411-32c975a764a0\"\n      userId: \"9e5e4101-7dd4-4e65-a430-798571204705\"\n    }\n  ) {\n    id\n    firstName\n    lastName\n    email\n  }\n}\n",
+														"variables": ""
+													}
+												},
+												"url": {
+													"raw": "http://localhost:3000/graphql",
+													"protocol": "http",
+													"host": [
+														"localhost"
+													],
+													"port": "3000",
+													"path": [
+														"graphql"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "unSubscibeUser",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "graphql",
+													"graphql": {
+														"query": "mutation unSubscribeUser {\n  unSubscribeUser(\n    input: {\n      id: \"e203562e-0dea-4b36-b367-88e1ede9e578\"\n      userId: \"d9d2c9f5-7a51-4925-88f1-bb66a275b63b\"\n    }\n  ) {\n    id\n    firstName\n    lastName\n    email\n  }\n}\n",
+														"variables": ""
+													}
+												},
+												"url": {
+													"raw": "http://localhost:3000/graphql",
+													"protocol": "http",
+													"host": [
+														"localhost"
+													],
+													"port": "3000",
+													"path": [
+														"graphql"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}
