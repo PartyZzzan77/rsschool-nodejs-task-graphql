@@ -16,9 +16,11 @@ import {
 	GraphQLString,
 } from 'graphql';
 import fetch from 'node-fetch';
+//import depthLimit from 'graphql-depth-limit';
 
 const baseURL = 'http://localhost';
 const port = 3000;
+//const depthLimitMiddleware = depthLimit(6);
 
 const routeUrl = {
 	users: `${baseURL}:${port}/users`,
@@ -45,6 +47,36 @@ const UserType = new GraphQLObjectType({
 				return targetProfile;
 			},
 		},
+		userSubscribedTo: {
+			type: new GraphQLList(UserSubscribedToType),
+			async resolve(parent: UserEntity) {
+				return parent.subscribedToUserIds.map(async (sub) => {
+					if (sub) {
+						const response = await fetch(`${routeUrl.users}/${sub}`);
+						if (response) {
+							return await response.json();
+						}
+					}
+				});
+			},
+		},
+
+		subscribedToUser: {
+			type: new GraphQLList(SubscribedToType),
+			async resolve(parent: UserEntity) {
+				const response = await fetch(`${routeUrl.users}`);
+				const users: { entities: UserEntity[] } = await response.json();
+
+				return users.entities
+					.map((user) => {
+						if (user.subscribedToUserIds.includes(parent.id)) {
+							return user;
+						}
+					})
+					.filter((el) => el);
+				//TODO null
+			},
+		},
 		posts: {
 			type: new GraphQLList(PostType),
 			async resolve(parent: UserEntity, args: Record<'id', string>) {
@@ -54,26 +86,6 @@ const UserType = new GraphQLObjectType({
 					(post) => parent.id === post.userId
 				);
 				return targetPosts;
-			},
-		},
-		userSubscribedTo: {
-			type: new GraphQLList(FollowerType),
-			async resolve(parent: UserEntity, args: Record<'id', string>) {
-				const response = await fetch(`${routeUrl.users}`);
-				const subscribes: { entities: UserEntity[] } = await response.json();
-				const targetSubscribes: Omit<UserEntity, 'subscribedToUserIds'>[] =
-					subscribes.entities.filter((subscriber) => {
-						if (subscriber.subscribedToUserIds.includes(parent.id)) {
-							return {
-								id: subscriber.id,
-								firstName: subscriber.firstName,
-								lastName: subscriber.lastName,
-								email: subscriber.email,
-							};
-						}
-					});
-
-				return targetSubscribes;
 			},
 		},
 		memberType: {
@@ -91,14 +103,48 @@ const UserType = new GraphQLObjectType({
 	}),
 });
 
-const FollowerType = new GraphQLObjectType({
-	name: 'FollowerType',
-	fields: {
+const UserSubscribedToType = new GraphQLObjectType({
+	name: 'userSubscribedToType',
+	fields: () => ({
 		id: { type: GraphQLID },
-		firstName: { type: GraphQLString },
-		lastName: { type: GraphQLString },
-		email: { type: GraphQLString },
-	},
+		firstName: { type: new GraphQLNonNull(GraphQLString) },
+		lastName: { type: new GraphQLNonNull(GraphQLString) },
+		email: { type: new GraphQLNonNull(GraphQLString) },
+		subscribedTo: { type: new GraphQLList(GraphQLID) },
+		profile: {
+			type: ProfileType,
+			async resolve(parent: UserEntity, args: Record<'id', string>) {
+				const response = await fetch(`${routeUrl.profiles}`);
+				const profiles: { entities: ProfileEntity[] } = await response.json();
+				const targetProfile = profiles.entities.find(
+					(profile) => profile.userId === parent.id
+				);
+				return targetProfile;
+			},
+		},
+	}),
+});
+
+const SubscribedToType = new GraphQLObjectType({
+	name: 'SubscribedToType',
+	fields: () => ({
+		id: { type: GraphQLID },
+		firstName: { type: new GraphQLNonNull(GraphQLString) },
+		lastName: { type: new GraphQLNonNull(GraphQLString) },
+		posts: {
+			type: new GraphQLList(PostType),
+			async resolve(parent: UserEntity, args: Record<'id', string>) {
+				const response = await fetch(`${routeUrl.posts}`);
+				const posts: { entities: PostEntity[] } = await response.json();
+				const targetPosts = posts.entities.filter(
+					(post) => parent.id === post.userId
+				);
+				return targetPosts;
+			},
+		},
+		email: { type: new GraphQLNonNull(GraphQLString) },
+		subscribedTo: { type: new GraphQLList(GraphQLID) },
+	}),
 });
 
 const ProfileType = new GraphQLObjectType({
@@ -572,12 +618,14 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 						source: query,
 						variableValues: variables,
 					});
-					console.log(result);
 
 					return reply.send(result);
 				}
 
-				const result = await graphql({ schema, source: query });
+				const result = await graphql({
+					schema,
+					source: query,
+				});
 				return reply.send(result);
 			}
 		}
