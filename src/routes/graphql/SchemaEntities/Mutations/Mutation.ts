@@ -1,7 +1,22 @@
 import fetch from 'node-fetch';
 import { GraphQLObjectType } from 'graphql';
-import { addPostDtoInput, addProfileDtoInput, addUserDtoInput, subscribeUserDtoInput, unSubscribeUserDtoInput, updateMemberDtoInput, updatePostDtoInput, updateProfileDtoInput, updateUserDtoInput } from './MutationDefs';
-import { MemberType, PostType, ProfileType, UserType } from '../Querys/QueryDefs';
+import {
+	addPostDtoInput,
+	addProfileDtoInput,
+	addUserDtoInput,
+	subscribeUserDtoInput,
+	unSubscribeUserDtoInput,
+	updateMemberDtoInput,
+	updatePostDtoInput,
+	updateProfileDtoInput,
+	updateUserDtoInput,
+} from './MutationDefs';
+import {
+	MemberType,
+	PostType,
+	ProfileType,
+	UserType,
+} from '../Querys/QueryDefs';
 import { UserEntity } from '../../../../utils/DB/entities/DBUsers';
 import { ProfileEntity } from '../../../../utils/DB/entities/DBProfiles';
 import { PostEntity } from '../../../../utils/DB/entities/DBPosts';

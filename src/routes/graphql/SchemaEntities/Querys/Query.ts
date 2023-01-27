@@ -1,6 +1,20 @@
 import fetch from 'node-fetch';
-import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
-import { EntityByIdInput, EntityByIdType, MemberType, PostType, ProfileType, UserType, UsersWithFollowersType } from './QueryDefs';
+import {
+	GraphQLID,
+	GraphQLList,
+	GraphQLNonNull,
+	GraphQLObjectType,
+	GraphQLString,
+} from 'graphql';
+import {
+	EntityByIdInput,
+	EntityByIdType,
+	MemberType,
+	PostType,
+	ProfileType,
+	UserType,
+	UsersWithFollowersType,
+} from './QueryDefs';
 import { UserEntity } from '../../../../utils/DB/entities/DBUsers';
 import { ProfileEntity } from '../../../../utils/DB/entities/DBProfiles';
 import { PostEntity } from '../../../../utils/DB/entities/DBPosts';
