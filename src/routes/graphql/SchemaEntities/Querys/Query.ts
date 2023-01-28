@@ -2,7 +2,6 @@ import fetch from 'node-fetch';
 import {
 	GraphQLID,
 	GraphQLList,
-
 	GraphQLObjectType,
 	GraphQLString,
 } from 'graphql';

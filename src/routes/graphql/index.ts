@@ -30,7 +30,7 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 							depthLimit(MAX_DEPTH)
 						);
 
-						if (validateErrors) {
+						if (validateErrors.length) {
 							throw new Error(REQUEST_DEPTH_ERROR);
 						}
 
