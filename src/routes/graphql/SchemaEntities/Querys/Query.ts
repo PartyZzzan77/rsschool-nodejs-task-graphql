@@ -5,18 +5,13 @@ import {
 	GraphQLObjectType,
 	GraphQLString,
 } from 'graphql';
-import {
-	MemberType,
-	PostType,
-	ProfileType,
-	UserType,
-	UsersWithFollowersType,
-} from './QueryDefs';
+import { MemberType, PostType, ProfileType, UserType } from './QueryDefs';
 import { UserEntity } from '../../../../utils/DB/entities/DBUsers';
 import { ProfileEntity } from '../../../../utils/DB/entities/DBProfiles';
 import { PostEntity } from '../../../../utils/DB/entities/DBPosts';
 import { MemberTypeEntity } from '../../../../utils/DB/entities/DBMemberTypes';
 import { routeUrl } from '../../config';
+import { CTX } from '../..';
 
 export const Query = new GraphQLObjectType({
 	name: 'Query',
@@ -32,10 +27,9 @@ export const Query = new GraphQLObjectType({
 		user: {
 			type: UserType,
 			args: { id: { type: GraphQLID } },
-			async resolve(parent: UserEntity, args: Record<'id', string>) {
-				const response = await fetch(`${routeUrl.users}/${args.id}`);
-
-				return await response.json();
+			async resolve(parent: UserEntity, args: Record<'id', string>, ctx: CTX) {
+				const user = await ctx.users.load(args.id);
+				return user[0];
 			},
 		},
 		profiles: {
@@ -49,10 +43,9 @@ export const Query = new GraphQLObjectType({
 		profile: {
 			type: ProfileType,
 			args: { id: { type: GraphQLID } },
-			async resolve(parent: UserEntity, args: Record<'id', string>) {
-				const response = await fetch(`${routeUrl.profiles}/${args.id}`);
-
-				return await response.json();
+			async resolve(parent: UserEntity, args: Record<'id', string>, ctx: CTX) {
+				const profile = await ctx.profiles.load(args.id);
+				return profile[0];
 			},
 		},
 		posts: {
@@ -66,10 +59,9 @@ export const Query = new GraphQLObjectType({
 		post: {
 			type: PostType,
 			args: { id: { type: GraphQLID } },
-			async resolve(parent: UserEntity, args: Record<'id', string>) {
-				const response = await fetch(`${routeUrl.posts}/${args.id}`);
-
-				return await response.json();
+			async resolve(parent: UserEntity, args: Record<'id', string>, ctx: CTX) {
+				const post = await ctx.posts.load(args.id);
+				return post[0];
 			},
 		},
 		memberTypes: {
@@ -84,21 +76,9 @@ export const Query = new GraphQLObjectType({
 		memberType: {
 			type: MemberType,
 			args: { id: { type: GraphQLString } },
-			async resolve(parent: UserEntity, args: Record<'id', string>) {
-				const response = await fetch(`${routeUrl.memberTypes}/${args.id}`);
-
-				return await response.json();
-			},
-		},
-		getUsersWithFollowers: {
-			type: UsersWithFollowersType,
-			async resolve(parent: UserEntity, args: unknown) {
-				const response = await fetch(`${routeUrl.users}`);
-				const users: { entities: UserEntity[] } = await response.json();
-				const subscribers = users.entities.filter((subscriber) =>
-					subscriber.subscribedToUserIds.includes(parent.id)
-				);
-				return subscribers;
+			async resolve(parent: UserEntity, args: Record<'id', string>, ctx: CTX) {
+				const type = await ctx.memberType.load(args.id);
+				return type[0];
 			},
 		},
 	},

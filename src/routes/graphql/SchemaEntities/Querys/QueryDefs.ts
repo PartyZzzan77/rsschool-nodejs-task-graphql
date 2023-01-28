@@ -12,6 +12,7 @@ import { UserEntity } from '../../../../utils/DB/entities/DBUsers';
 import { ProfileEntity } from '../../../../utils/DB/entities/DBProfiles';
 import { PostEntity } from '../../../../utils/DB/entities/DBPosts';
 import { routeUrl } from '../../config';
+import { CTX } from '../..';
 
 export const UserType = new GraphQLObjectType({
 	name: 'User',
@@ -22,24 +23,23 @@ export const UserType = new GraphQLObjectType({
 		email: { type: new GraphQLNonNull(GraphQLString) },
 		profile: {
 			type: ProfileType,
-			async resolve(parent: UserEntity, args: Record<'id', string>) {
+			async resolve(parent: UserEntity) {
 				const response = await fetch(`${routeUrl.profiles}`);
 				const profiles: { entities: ProfileEntity[] } = await response.json();
 				const targetProfile = profiles.entities.find(
 					(profile) => profile.userId === parent.id
 				);
+
 				return targetProfile;
 			},
 		},
 		userSubscribedTo: {
 			type: new GraphQLList(UserSubscribedToType),
-			async resolve(parent: UserEntity) {
+			async resolve(parent: UserEntity, args: unknown, ctx: CTX) {
 				return parent.subscribedToUserIds.map(async (sub) => {
 					if (sub) {
-						const response = await fetch(`${routeUrl.users}/${sub}`);
-						if (response) {
-							return await response.json();
-						}
+						const user = await ctx.users.load(sub);
+						return user[0];
 					}
 				});
 			},
@@ -61,18 +61,19 @@ export const UserType = new GraphQLObjectType({
 		},
 		posts: {
 			type: new GraphQLList(PostType),
-			async resolve(parent: UserEntity, args: Record<'id', string>) {
+			async resolve(parent: UserEntity) {
 				const response = await fetch(`${routeUrl.posts}`);
 				const posts: { entities: PostEntity[] } = await response.json();
 				const targetPosts = posts.entities.filter(
 					(post) => parent.id === post.userId
 				);
+
 				return targetPosts;
 			},
 		},
 		memberType: {
 			type: GraphQLString,
-			async resolve(parent: UserEntity, args: Record<'id', string>) {
+			async resolve(parent: UserEntity) {
 				const response = await fetch(`${routeUrl.profiles}`);
 				const profiles: { entities: ProfileEntity[] } = await response.json();
 				const profile = profiles.entities.find(
@@ -94,24 +95,23 @@ export const UserSubscribedToType = new GraphQLObjectType({
 		email: { type: new GraphQLNonNull(GraphQLString) },
 		profile: {
 			type: ProfileType,
-			async resolve(parent: UserEntity, args: Record<'id', string>) {
+			async resolve(parent: UserEntity) {
 				const response = await fetch(`${routeUrl.profiles}`);
 				const profiles: { entities: ProfileEntity[] } = await response.json();
 				const targetProfile = profiles.entities.find(
 					(profile) => profile.userId === parent.id
 				);
+
 				return targetProfile;
 			},
 		},
 		userSubscribedTo: {
 			type: new GraphQLList(UserSubscribedToNestedType),
-			async resolve(parent: UserEntity) {
+			async resolve(parent: UserEntity, args: unknown, ctx: CTX) {
 				return parent.subscribedToUserIds.map(async (sub) => {
 					if (sub) {
-						const response = await fetch(`${routeUrl.users}/${sub}`);
-						if (response) {
-							return await response.json();
-						}
+						const user = await ctx.users.load(sub);
+						return user[0];
 					}
 				});
 			},
@@ -129,12 +129,13 @@ export const UserSubscribedToNestedType = new GraphQLObjectType({
 		subscribedTo: { type: new GraphQLList(GraphQLID) },
 		profile: {
 			type: ProfileType,
-			async resolve(parent: UserEntity, args: Record<'id', string>) {
+			async resolve(parent: UserEntity) {
 				const response = await fetch(`${routeUrl.profiles}`);
 				const profiles: { entities: ProfileEntity[] } = await response.json();
 				const targetProfile = profiles.entities.find(
 					(profile) => profile.userId === parent.id
 				);
+
 				return targetProfile;
 			},
 		},
@@ -150,12 +151,13 @@ export const SubscribedToType = new GraphQLObjectType({
 		email: { type: new GraphQLNonNull(GraphQLString) },
 		posts: {
 			type: new GraphQLList(PostType),
-			async resolve(parent: UserEntity, args: Record<'id', string>) {
+			async resolve(parent: UserEntity) {
 				const response = await fetch(`${routeUrl.posts}`);
 				const posts: { entities: PostEntity[] } = await response.json();
 				const targetPosts = posts.entities.filter(
 					(post) => parent.id === post.userId
 				);
+
 				return targetPosts;
 			},
 		},
@@ -185,12 +187,13 @@ export const SubscribedToNestedType = new GraphQLObjectType({
 		lastName: { type: new GraphQLNonNull(GraphQLString) },
 		posts: {
 			type: new GraphQLList(PostType),
-			async resolve(parent: UserEntity, args: Record<'id', string>) {
+			async resolve(parent: UserEntity) {
 				const response = await fetch(`${routeUrl.posts}`);
 				const posts: { entities: PostEntity[] } = await response.json();
 				const targetPosts = posts.entities.filter(
 					(post) => parent.id === post.userId
 				);
+
 				return targetPosts;
 			},
 		},
