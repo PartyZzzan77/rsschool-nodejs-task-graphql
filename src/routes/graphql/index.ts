@@ -61,17 +61,16 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
 
 			try {
 				if (query) {
+					const validateErrors = validate(schema, parse(query), [
+						depthLimit(MAX_DEPTH),
+					]);
+
+					if (validateErrors.length) {
+						reply.status(500).send(validateErrors[0]);
+						throw new Error(REQUEST_DEPTH_ERROR);
+					}
+
 					if (variables) {
-						const validateErrors = validate(
-							schema,
-							parse(query),
-							depthLimit(MAX_DEPTH)
-						);
-
-						if (validateErrors.length) {
-							throw new Error(REQUEST_DEPTH_ERROR);
-						}
-
 						const result = await graphql({
 							schema,
 							source: query,
