@@ -1,0 +1,63 @@
+{
+	"entities": [
+		{
+			"firstName": "Amigo",
+			"lastName": "Doe",
+			"email": "amigo@test.com",
+			"subscribedToUserIds": ["83e63dec-1696-4fa8-a7c4-1c02ec3db8a2"],
+			"id": "3180a824-e817-4c02-97ed-c642650a2a47"
+		},
+		{
+			"firstName": "Amigo2",
+			"lastName": "Doe",
+			"email": "amigo@test.com",
+			"subscribedToUserIds": [
+				"3180a824-e817-4c02-97ed-c642650a2a47",
+				"07cf6a1e-1461-4d07-ac70-4d1c46c4dcdf"
+			],
+			"id": "83e63dec-1696-4fa8-a7c4-1c02ec3db8a2"
+		},
+		{
+			"firstName": "Amigo3",
+			"lastName": "Doe",
+			"email": "amigo@test.com",
+			"subscribedToUserIds": ["3b130fab-8c81-4e76-98cd-22bd123ece31"],
+			"id": "fc6e6446-2c51-4f1d-bbfa-aff7aaf2d752"
+		},
+		{
+			"firstName": "Amigo4",
+			"lastName": "Doe",
+			"email": "amigo@test.com",
+			"subscribedToUserIds": ["83e63dec-1696-4fa8-a7c4-1c02ec3db8a2"],
+			"id": "07cf6a1e-1461-4d07-ac70-4d1c46c4dcdf"
+		},
+		{
+			"firstName": "Amigo5",
+			"lastName": "Doe",
+			"email": "amigo@test.com",
+			"subscribedToUserIds": ["fc6e6446-2c51-4f1d-bbfa-aff7aaf2d752"],
+			"id": "3b130fab-8c81-4e76-98cd-22bd123ece31"
+		},
+		{
+			"firstName": "Amigo6",
+			"lastName": "Doe",
+			"email": "amigo@test.com",
+			"subscribedToUserIds": [],
+			"id": "dd9319b7-7ad0-464a-a886-2766153a61a6"
+		},
+		{
+			"firstName": "Amigo7",
+			"lastName": "Doe",
+			"email": "amigo@test.com",
+			"subscribedToUserIds": [],
+			"id": "48ea48ee-4db5-409d-b5ae-7a1173ccf45b"
+		},
+		{
+			"firstName": "Amigo8",
+			"lastName": "Doe",
+			"email": "amigo@test.com",
+			"subscribedToUserIds": [],
+			"id": "6421db0c-4e49-4e71-aaf6-96b426647bac"
+		}
+	]
+}
