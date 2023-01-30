@@ -9,7 +9,28 @@ import { MemberTypeEntity } from '../../../utils/DB/entities/DBMemberTypes';
 class UserService {
 	constructor() {}
 
-	public async getProfile(parent: UserEntity) {
+	public async getUsers(): Promise<UserEntity[]> {
+		const response = await fetch(routeUrl.users);
+		const users: { entities: UserEntity[] } = await response.json();
+		return users.entities;
+	}
+
+	public async getUserById(
+		parent: UserEntity,
+		args: Record<'id', string>,
+		ctx: CTX
+	) {
+		const user = await ctx.users.load(args.id);
+		return user[0];
+	}
+
+	public async getProfiles() {
+		const response = await fetch(routeUrl.profiles);
+		const profiles: { entities: ProfileEntity[] } = await response.json();
+		return profiles.entities;
+	}
+
+	public async findProfile(parent: UserEntity) {
 		const response = await fetch(`${routeUrl.profiles}`);
 		const profiles: { entities: ProfileEntity[] } = await response.json();
 		const targetProfile = profiles.entities.find(
@@ -17,6 +38,15 @@ class UserService {
 		);
 
 		return targetProfile;
+	}
+
+	public async getProfileById(
+		parent: UserEntity,
+		args: Record<'id', string>,
+		ctx: CTX
+	) {
+		const profile = await ctx.profiles.load(args.id);
+		return profile[0];
 	}
 
 	public async getUserSubscribedTo(
@@ -45,7 +75,13 @@ class UserService {
 			.filter((el) => el);
 	}
 
-	public async getPosts(parent: UserEntity) {
+	public async getAllPosts() {
+		const response = await fetch(routeUrl.posts);
+		const posts: { entities: PostEntity[] } = await response.json();
+		return posts.entities;
+	}
+
+	public async findPosts(parent: UserEntity) {
 		const response = await fetch(`${routeUrl.posts}`);
 		const posts: { entities: PostEntity[] } = await response.json();
 		const targetPosts = posts.entities.filter(
@@ -55,7 +91,22 @@ class UserService {
 		return targetPosts;
 	}
 
-	public async getMemberType(parent: UserEntity) {
+	public async getPostById(
+		parent: UserEntity,
+		args: Record<'id', string>,
+		ctx: CTX
+	) {
+		const post = await ctx.posts.load(args.id);
+		return post[0];
+	}
+
+	public async getMemberTypes() {
+		const response = await fetch(routeUrl.memberTypes);
+		const memberTypes: { entities: MemberTypeEntity[] } = await response.json();
+		return memberTypes.entities;
+	}
+
+	public async findMemberType(parent: UserEntity) {
 		const response = await fetch(`${routeUrl.profiles}`);
 		const profiles: { entities: ProfileEntity[] } = await response.json();
 		const profile = profiles.entities.find(
@@ -63,6 +114,15 @@ class UserService {
 		);
 
 		return profile?.memberTypeId;
+	}
+
+	public async getMemberTypeById(
+		parent: UserEntity,
+		args: Record<'id', string>,
+		ctx: CTX
+	) {
+		const type = await ctx.memberType.load(args.id);
+		return type[0];
 	}
 
 	public async addUser(

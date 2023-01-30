@@ -18,7 +18,7 @@ export const UserType: GraphQLObjectType<any, any> = new GraphQLObjectType({
 		email: { type: new GraphQLNonNull(GraphQLString) },
 		profile: {
 			type: ProfileType,
-			resolve: userService.getProfile,
+			resolve: userService.findProfile,
 		},
 		userSubscribedTo: {
 			type: new GraphQLList(UserType),
@@ -30,11 +30,11 @@ export const UserType: GraphQLObjectType<any, any> = new GraphQLObjectType({
 		},
 		posts: {
 			type: new GraphQLList(PostType),
-			resolve: userService.getPosts,
+			resolve: userService.findPosts,
 		},
 		memberType: {
 			type: GraphQLString,
-			resolve: userService.getMemberType,
+			resolve: userService.findMemberType,
 		},
 	}),
 });
